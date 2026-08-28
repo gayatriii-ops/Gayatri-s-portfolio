@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAYATHRI | Developer • Artist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #e5e5e5;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .serif { font-family: 'Playfair Display', serif; }
+        
+        /* Film Grain Overlay */
+        .grain {
+            position: fixed;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Stock_Noise_Static_Overlay_Texture.png');
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 9999;
+            animation: noise 0.2s infinite;
+        }
+        @keyframes noise {
+            0% { transform: translate(0,0) }
+            10% { transform: translate(-5%,-5%) }
+            20% { transform: translate(-10%,5%) }
+            30% { transform: translate(5%,-10%) }
+            100% { transform: translate(0,0) }
+        }
+
+        .custom-cursor {
+            width: 20px; height: 20px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transition: transform 0.1s ease;
+        }
+
+        .reveal-text { clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%); }
+        
+        .project-card {
+            height: 80vh;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .music-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 18px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.bars-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    width: 20px;
+    height: 15px;
+}
+
+.bar {
+    width: 3px;
+    height: 100%;
+    background-color: #ffffff;
+    border-radius: 2px;
+    transition: height 0.3s ease;
+}
+
+.playing .bar {
+    animation: bounce 0.8s ease-in-out infinite alternate;
+}
+
+.playing .bar:nth-child(1) { animation-delay: 0.1s; }
+.playing .bar:nth-child(2) { animation-delay: 0.3s; }
+.playing .bar:nth-child(3) { animation-delay: 0.2s; }
+.playing .bar:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+    0% { height: 3px; }
+    100% { height: 100%; }
+}
+
+#btn-text {
+    color: white;
+    font-size: 12px;
+    font-family: sans-serif;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+}
+
+.music-container:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+}
+.music-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 18px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.bars-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    width: 20px;
+    height: 15px;
+}
+
+.bar {
+    width: 3px;
+    height: 100%;
+    background-color: #ffffff;
+    border-radius: 2px;
+    transition: height 0.3s ease;
+}
+
+.playing .bar {
+    animation: bounce 0.8s ease-in-out infinite alternate;
+}
+
+.playing .bar:nth-child(1) { animation-delay: 0.1s; }
+.playing .bar:nth-child(2) { animation-delay: 0.3s; }
+.playing .bar:nth-child(3) { animation-delay: 0.2s; }
+.playing .bar:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+    0% { height: 3px; }
+    100% { height: 100%; }
+}
+
+#btn-text {
+    color: white;
+    font-size: 12px;
+    font-family: sans-serif;
+    letter-spacing: 1.5px;
+    font-weight: 500;
+}
+.music-container:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+}
+</style>
+   <!-- Ensure your JS file is linked at the very bottom of the body -->
+   <script src="script.js"></script>
+   <audio id="bg-music" loop>
+    <source src="Do I Wanna Know.mp3" type="audio/mpeg">
+</audio>
+
+<div id="music-btn" class="music-container">
+    <div class="bars-container">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+    <span id="btn-text">PLAY MUSIC</span>
+</div>
+</body>
+    <div class="grain"></div>
+    <div class="custom-cursor" id="cursor"></div>
+    <!-- 🎬 CINEMATIC OPENING -->
+    <div id="loader" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center text-center">
+        <div class="mb-4 overflow-hidden">
+            <span id="loader-year" class="block text-sm tracking-[0.5em] text-gray-500 opacity-0">G / 2026</span>
+        </div>
+        <h1 id="loader-name" class="serif text-5xl md:text-7xl tracking-tighter opacity-0">GAYATHRI</h1>
+        <div id="loader-sub" class="mt-4 text-[10px] tracking-[0.3em] text-gray-400 opacity-0">
+            BCA STUDENT • FRONT-END DEVELOPER • CREATIVE ARTIST
+        </div>
+    </div>
+
+    <!-- 🎥 HERO SECTION -->
+    
+    <section id="hero" class="relative h-screen w-full flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80')] bg-cover bg-center opacity-30 scale-110" id="hero-bg"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black"></div>
+        
+      <div class="relative z-10 text-center px-4">
+            <h2 class="serif text-6xl md:text-9xl leading-none mb-6 reveal-text">
+                I TURN IDEAS <br> <span class="italic font-light">INTO EXPERIENCES.</span>
+            </h2>
+            <p class="text-gray-400 tracking-[0.4em] uppercase text-xs mb-12">Code. Create. Capture. Express.</p>
+            
+            <div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+                <a href="#work" class="px-8 py-4 border border-white/20 hover:bg-white hover:text-black transition-all duration-500 text-xs tracking-widest uppercase">Explore My Work</a>
+                <a href="#contact" class="px-8 py-4 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-all duration-500 text-xs tracking-widest uppercase">Let's Connect</a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 left-10 hidden md:flex flex-col gap-4 text-[10px] tracking-widest uppercase text-gray-500">
+            <a href="https://github.com/gayatriii-ops" target="_blank" class="hover:text-white transition-colors">GitHub</a>
+            <a href="https://www.instagram.com/gayatryyyeee" target="_blank" class="hover:text-white transition-colors">Instagram</a>
+            <a href="mailto:gayathrykrishnas24@gmail.com" class="hover:text-white transition-colors">Email</a>
+        </div>
+
+        <div class="absolute bottom-10 animate-bounce">
+            <p class="text-[10px] tracking-[0.2em] text-gray-500">SCROLL TO ENTER ↓</p>
+        </div>
+    </section>
+
+    <!-- 👩🏻 ABOUT — THE STORY -->
+    <section id="about" class="py-32 px-6 md:px-20 bg-black">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <div class="overflow-hidden group">
+              <img src="profile pic.jpg"
+                     alt="Gayathri Profile" 
+                     class="w-full h-[600px] object-cover transition-transform duration-1000 group-hover:scale-105" id="about-img">
+            </div>
+            <div>
+                <p class="text-xs tracking-[0.5em] text-gray-500 mb-8 uppercase">The Story</p>
+                <h2 class="serif text-4xl md:text-5xl mb-10 leading-tight">"A developer with an <br> <span class="italic text-gray-400">artist's soul."</span></h2>
+                <div class="space-y-6 text-lg text-gray-400 font-light leading-relaxed stagger-text">
+                    <p>Hi, I'm Gayathri.</p>
+                    <p>I'm a BCA student passionate about technology, creativity, and visual storytelling.</p>
+                    <p>I enjoy building websites and exploring front-end development while expressing my creativity through photography, videography, painting, dancing, drawing, and writing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 💻 THE DEVELOPER (THE CRAFT) -->
+    <section class="py-32 bg-[#0d0d0d]">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="serif text-5xl mb-20 text-center">The Craft</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="glass p-10 flex flex-col items-center hover:bg-white/10 transition-colors">
+                    <span class="text-xs tracking-widest text-gray-500 mb-4">01</span>
+                    <h3 class="tracking-widest uppercase">HTML</h3>
+                </div>
+                <div class="glass p-10 flex flex-col items-center hover:bg-white/10 transition-colors">
+                    <span class="text-xs tracking-widest text-gray-500 mb-4">02</span>
+                    <h3 class="tracking-widest uppercase">CSS</h3>
+                </div>
+                <div class="glass p-10 flex flex-col items-center hover:bg-white/10 transition-colors">
+                    <span class="text-xs tracking-widest text-gray-500 mb-4">03</span>
+                    <h3 class="tracking-widest uppercase">JavaScript</h3>
+                </div>
+                <div class="glass p-10 flex flex-col items-center hover:bg-white/10 transition-colors">
+                    <span class="text-xs tracking-widest text-gray-500 mb-4">04</span>
+                    <h3 class="tracking-widest uppercase">UI/UX</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🚀 PROJECTS -->
+    <section id="work" class="bg-black">
+        <div class="py-20 px-6 max-w-7xl mx-auto">
+            <p class="text-xs tracking-[0.5em] text-gray-500 mb-4 uppercase text-center">Featured Projects</p>
+            <h2 class="serif text-6xl text-center mb-20 italic">The Work</h2>
+        </div>
+
+        <!-- Project 01 -->
+        <div class="project-card flex items-center justify-center group" style="background-image: url('https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&q=80');">
+            <div class="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-all duration-700"></div>
+            <div class="relative z-10 text-center max-w-2xl px-6">
+                <p class="text-xs tracking-widest mb-4">PROJECT 01</p>
+                <h3 class="serif text-5xl md:text-7xl mb-6">CookFromHome</h3>
+                <p class="text-gray-300 font-light mb-8">A simple recipe finder web application that helps users discover recipes based on ingredients.</p>
+                <p class="text-[10px] tracking-[0.3em] text-gray-400 mb-10 uppercase">HTML • CSS • JavaScript</p>
+                <div class="flex justify-center gap-6">
+                    <a href="https://github.com/gayatriii-ops/CookFromHome" target="_blank" class="text-xs tracking-widest border-b border-white pb-2 hover:opacity-<50></50> transition-opacity">GITHUB</a>
+                    <a href="https://gayatriii-ops.github.io/CookFromHome/" target="_blank" class="text-xs tracking-widest border-b border-white pb-2 hover:opacity-50 transition-opacity">VIEW PROJECT</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Future Project Placeholder -->
+        <div class="project-card flex items-center justify-center group" style="background-image: url('https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&q=80');">
+            <div class="absolute inset-0 bg-black/80"></div>
+            <div class="relative z-10 text-center opacity-40">
+                <p class="text-xs tracking-widest mb-4 italic">COMING SOON</p>
+                <h3 class="serif text-5xl">Future Creation</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🎨 BEYOND CODE (Creative Sections) -->
+    <section class="py-32 px-6 bg-[#0a0a0a]">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="serif text-5xl mb-20 text-center italic">Beyond Code</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Photography Card -->
+                <div class="relative h-[500px] overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-black/40 flex flex-col justify-end p-10">
+                        <h4 class="serif text-3xl mb-2">Photography</h4>
+                        <p class="text-xs tracking-widest text-gray-300 uppercase italic">"Capture the feeling"</p>
+                    </div>
+                </div>
+
+                <!-- Painting Card -->
+                <div class="relative h-[500px] overflow-hidden group md:mt-20">
+                    <img src="https://images.unsplash.com/photo-1541963463532-d68292c34b19?auto=format&fit=crop&q=80" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-black/40 flex flex-col justify-end p-10">
+                        <h4 class="serif text-3xl mb-2">Art & Painting</h4>
+                        <p class="text-xs tracking-widest text-gray-300 uppercase italic">"Creation of soul"</p>
+                    </div>
+                </div>
+
+                <!-- Dance Card -->
+                <div class="relative h-[500px] overflow-hidden group">
+                    <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-black/40 flex flex-col justify-end p-10">
+                        <h4 class="serif text-3xl mb-2">Movement</h4>
+                        <p class="text-xs tracking-widest text-gray-300 uppercase italic">"Expression without words"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- ✍️ WORDS SECTION -->
+<section id="words" class="py-32 bg-black border-t border-white/5">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="text-center mb-20">
+            <p class="text-xs tracking-[0.5em] text-gray-500 mb-4 uppercase">Literature</p>
+            <h2 class="serif text-5xl italic">Words</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+            <!-- Featured Story: അവസാന ബെഞ്ചിലെ ജനൽ -->
+            <div class="glass p-10 md:p-14 hover:bg-white/[0.05] transition-all group cursor-pointer border-l-4 border-white/10 hover:border-white" onclick="toggleStoryModal()">
+                <p class="text-[10px] tracking-widest text-gray-500 mb-4 uppercase">Short Story • Malayalam</p>
+                <h3 class="serif text-4xl mb-6 leading-tight">അവസാന ബെഞ്ചിലെ ജനൽ</h3>
+                <p class="text-gray-400 font-light leading-relaxed mb-8 line-clamp-4">
+                    കോളേജിലെ അവസാന ബെഞ്ചിനരികിലുള്ള ജനൽ ആർക്കും ഇഷ്ടമായിരുന്നില്ല. അവിടെ ഇരിക്കുന്നവർ പുറത്തേക്ക് നോക്കിയിരിക്കും, ക്ലാസിൽ ശ്രദ്ധിക്കില്ല എന്നായിരുന്നു എല്ലാവരുടെയും ധാരണ. പക്ഷേ ഓരോ ദിവസവും ആ ജനലരികിൽ ഒരാൾ മാത്രം കൃത്യമായി എത്തും. അർജുൻ...
+                </p>
+                <div class="flex items-center gap-4">
+                    <span class="h-[1px] w-10 bg-white/20 group-hover:w-16 transition-all"></span>
+                    <button class="text-[10px] tracking-widest uppercase text-white/80 group-hover:text-white">Read Full Story</button>
+                </div>
+            </div>
+</section>
+<!-- 📖 STORY MODAL (The Reader View) -->
+<div id="story-modal" class="fixed inset-0 z-[200] bg-black hidden overflow-y-auto pt-20 pb-20 px-6">
+    <div class="max-w-2xl mx-auto">
+        <!-- Close Button -->
+        <button onclick="toggleStoryModal()" class="fixed top-10 right-10 text-white text-xs tracking-widest uppercase border border-white/20 px-6 py-3 hover:bg-white hover:text-black transition-all">
+            Close ✕
+        </button>
+
+        <!-- Story Content -->
+        <article class="prose prose-invert lg:prose-xl mx-auto">
+            <p class="text-center text-xs tracking-[0.4em] text-gray-500 mb-4 uppercase">Short Story</p>
+            <h1 class="serif text-4xl md:text-6xl text-center mb-16 leading-tight">അവസാന ബെഞ്ചിലെ ജനൽ</h1>
+            
+            <div class="space-y-8 text-gray-300 font-light leading-[2] text-lg md:text-xl text-justify">
+                <p>കോളേജിലെ അവസാന ബെഞ്ചിനരികിലുള്ള ജനൽ ആർക്കും ഇഷ്ടമായിരുന്നില്ല. അവിടെ ഇരിക്കുന്നവർ പുറത്തേക്ക് നോക്കിയിരിക്കും, ക്ലാസിൽ ശ്രദ്ധിക്കില്ല എന്നായിരുന്നു എല്ലാവരുടെയും ധാരണ.</p>
+                
+                <p>പക്ഷേ ഓരോ ദിവസവും ആ ജനലരികിൽ ഒരാൾ മാത്രം കൃത്യമായി എത്തും. അർജുൻ. അർജുന് കാഴ്ചശേഷിയില്ലായിരുന്നു.</p>
+                
+                <p>"കാണാൻ കഴിയാത്ത ഒരാൾ എന്തിനാണ് ജനലരികിൽ ഇരിക്കുന്നത്?" എന്ന് പലരും പരിഹസിച്ചു. അവൻ മറുപടി പറഞ്ഞില്ല. വെറുതെ ചിരിച്ചു.</p>
+
+                <p>ഒരു ദിവസം മലയാളം അധ്യാപിക ക്ലാസിനോട് ചോദിച്ചു. "ഈ ജനലിലൂടെ നിങ്ങൾ എന്താണ് കാണുന്നത്?"</p>
+
+                <div class="pl-6 border-l border-white/20 italic text-gray-400 my-10 space-y-2">
+                    <p>"മരങ്ങൾ."</p>
+                    <p>"കളിസ്ഥലം."</p>
+                    <p>"ആകാശം."</p>
+                    <p>"പക്ഷികൾ."</p>
+                </div>
+
+                <p>ഓരോരുത്തരും ഓരോ മറുപടി പറഞ്ഞു. അവസാന അധ്യാപിക അർജുനെ നോക്കി. "നിനക്കോ?"</p>
+
+                <p>ക്ലാസ് മുഴുവൻ നിശ്ശബ്ദമായി. അർജുൻ പതുക്കെ എഴുന്നേറ്റു.</p>
+
+                <div class="bg-white/5 p-8 md:p-12 serif italic text-2xl leading-relaxed text-white">
+                    "എനിക്ക് മരങ്ങൾ കാണാൻ കഴിയില്ല. പക്ഷേ അവയുടെ ഇലകൾ കാറ്റിൽ ചിരിക്കുന്ന ശബ്ദം കേൾക്കാം. കളിസ്ഥലം കാണാൻ കഴിയില്ല. പക്ഷേ അവിടെ ആരൊക്കെയോ സ്വപ്നങ്ങൾ പിന്തുടരുന്ന കാലൊച്ച കേൾക്കാം. മഴ വരുമ്പോൾ മണ്ണിന്റെ മണം അറിയാം. പക്ഷികളുടെ പാട്ടിലൂടെ പ്രഭാതം തിരിച്ചറിയാം. എനിക്ക് ലോകം കാണാൻ കണ്ണുകളില്ല... പക്ഷേ ലോകം എന്നെ തേടി എല്ലാ ദിവസവും വരാറുണ്ട്."
+                </div>
+
+                <p>ഒരു നിമിഷം മുഴുവൻ ക്ലാസും മിണ്ടാതിരുന്നു. ആ ദിവസത്തിനുശേഷം ആരും അർജുനെ സഹതാപത്തോടെ നോക്കിയില്ല. അവർ അവനിൽ നിന്ന് പഠിക്കാൻ തുടങ്ങി.</p>
+
+                <p>മാസങ്ങൾക്കുശേഷം കോളേജിൽ പുതിയ കെട്ടിടം ഉദ്ഘാടനം ചെയ്തു. അതിൽ റാംപുകളും ബ്രെയിൽ ബോർഡുകളും ശബ്ദസൂചനകളും ഉണ്ടായിരുന്നു.</p>
+
+                <p>ഉദ്ഘാടന പ്രസംഗത്തിൽ പ്രിൻസിപ്പൽ പറഞ്ഞു: "ഈ മാറ്റങ്ങൾ ഞങ്ങൾ ആരെയെങ്കിലും സഹായിക്കാൻ ചെയ്തതല്ല. ഈ കോളേജ് എല്ലാവരുടേതാണെന്ന് അംഗീകരിക്കാനാണ്."</p>
+
+                <p>അർജുൻ വീണ്ടും ആ ജനലരികിൽ ഇരുന്നു. ഇപ്പോൾ പുറത്തുനിന്ന് വീശിയെത്തുന്ന കാറ്റ് പഴയതുപോലെ തന്നെയായിരുന്നു. പക്ഷേ കോളേജിന്റെ മനസ്സ് മാറിയിരുന്നു.</p>
+
+                <p class="font-bold text-white pt-10">അന്ന് അവസാന ബെഞ്ചിലെ ജനൽ എല്ലാവർക്കും ഒരു പാഠം പഠിപ്പിച്ചു—</p>
+
+                <p class="text-2xl serif italic border-t border-white/10 pt-6">ഭിന്നശേഷി ഒരാളുടെ കഴിവുകളെ കുറയ്ക്കുന്നില്ല. സമൂഹം പണിയുന്ന മതിലുകളാണ് അവസരങ്ങളെ കുറയ്ക്കുന്നത്. ആ മതിലുകൾ പൊളിഞ്ഞാൽ എല്ലാവർക്കും ഒരേ ആകാശമാണ്.</p>
+            </div>
+        </article>
+    </div>
+</div>
+        <!-- Signature -->
+        <div class="mt-20 pt-10 border-t border-white/5 text-center">
+            <p class="serif italic text-gray-500">Written by Gayathri</p>
+        </div>
+    </div>
+</div>
+            <!-- Future Writing Placeholder -->
+            <div class="md:mt-32">
+                <div class="opacity-40 p-10 border border-dashed border-white/20">
+                    <p class="serif text-xl italic text-gray-500">More stories and poems coming soon...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- 📄 THE JOURNEY -->
+    <section class="py-32 px-6 bg-black">
+        <div class="max-w-5xl mx-auto glass p-12 md:p-20">
+            <h2 class="serif text-4xl mb-12">The Journey</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-xs tracking-widest text-gray-500 uppercase mb-4">Education</h3>
+                    <p class="text-xl mb-1">BCA Student</p>
+                    <p class="text-gray-400 font-light italic">Focusing on Computer Science & Creative Tech</p>
+                </div>
+                <div>
+                    <h3 class="text-xs tracking-widest text-gray-500 uppercase mb-4">Interests</h3>
+                    <p class="text-gray-300 leading-relaxed">Technology • Art • Photography • Videography • Dance • Writing</p>
+                </div>
+            </div>
+                <div class="mt-12">
+    <a href="gayatri's cv.jpg" 
+       target="_blank" 
+       class="inline-block text-xs tracking-widest border border-white/30 px-8 py-3 hover:bg-white hover:text-black transition-all">
+       VIEW RESUME
+    </a>
+</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 📬 CONTACT -->
+    <section id="contact" class="py-32 px-6 bg-black text-center relative overflow-hidden">
+        <div class="relative z-10 max-w-4xl mx-auto">
+            <h2 class="serif text-6xl md:text-8xl mb-10 reveal-text">WHAT'S THE <br> <span class="italic">NEXT STORY?</span></h2>
+            <p class="text-gray-400 mb-16 tracking-widest uppercase text-sm">Let's create something unforgettable.</p>
+            
+            <form class="max-w-xl mx-auto space-y-8 mb-20 text-left">
+                <div class="border-b border-white/20 pb-2">
+                    <label class="text-[10px] uppercase tracking-widest text-gray-500">Name</label>
+                    <input type="text" class="w-full bg-transparent outline-none py-2 text-xl font-light focus:border-white transition-colors">
+                </div>
+                <div class="border-b border-white/20 pb-2">
+                    <label class="text-[10px] uppercase tracking-widest text-gray-500">Email</label>
+                    <input type="email" class="w-full bg-transparent outline-none py-2 text-xl font-light focus:border-white transition-colors">
+                </div>
+                <div class="border-b border-white/20 pb-2">
+                    <label class="text-[10px] uppercase tracking-widest text-gray-500">Message</label>
+                    <textarea rows="3" class="w-full bg-transparent outline-none py-2 text-xl font-light focus:border-white transition-colors"></textarea>
+                </div>
+                <button type="submit" class="w-full py-4 bg-white text-black uppercase tracking-widest text-xs font-bold hover:bg-gray-200 transition-colors">Send Message</button>
+            </form>
+
+            <div class="flex justify-center gap-10 text-xs tracking-widest text-gray-400">
+                <a href="https://github.com/gayatriii-ops" target="_blank" class="hover:text-white transition-colors">GITHUB</a>
+                <a href="https://www.instagram.com/gayatryyyeee" target="_blank" class="hover:text-white transition-colors">INSTAGRAM</a>
+                <a href="mailto:gayathrykrishnas24@gmail.com" class="hover:text-white transition-colors">EMAIL</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 🌑 FINAL FRAME -->
+    <footer class="h-screen bg-black flex flex-col items-center justify-center text-center px-6">
+        <h2 class="serif text-2xl mb-4 tracking-[0.5em] opacity-50">GAYATHRI</h2>
+        <p class="text-[10px] tracking-[0.4em] text-gray-600 mb-10">CODE • CREATE • DANCE • WRITE • CAPTURE</p>
+        <p class="text-[10px] text-gray-700 italic">© 2026 Gayathri</p>
+    </footer>
+
+    <script>
+        // GSAP Initialization
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
+        });
+
+        // Cinematic Loader Sequence
+        const tl = gsap.timeline();
+        tl.to("#loader-year", { opacity: 1, duration: 1, delay: 0.5 })
+          .to("#loader-name", { opacity: 1, duration: 1.5, y: -10 }, "-=0.5")
+          .to("#loader-sub", { opacity: 1, duration: 1 }, "-=1")
+          .to("#loader", { yPercent: -100, duration: 1.5, ease: "power4.inOut", delay: 1 })
+          .from("#hero-bg", { scale: 1.3, duration: 3, ease: "power2.out" }, "-=1")
+          .from(".reveal-text", { y: 100, opacity: 0, duration: 1.5, stagger: 0.2, ease: "power4.out" }, "-=2");
+
+        // Scroll Reveal Animations
+        gsap.utils.toArray('section').forEach(section => {
+            gsap.from(section.querySelectorAll('.stagger-text p'), {
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 80%",
+                },
+                y: 30,
+                opacity: 0,
+                duration: 1,
+                stagger: 0.2,
+                ease: "power3.out"
+            });
+        });
+
+        // Parallax Effects
+        gsap.to("#about-img", {
+            scrollTrigger: {
+                trigger: "#about",
+                scrub: true
+            },
+            y: -50,
+            ease: "none"
+        });
+
+        // Project Card Hover Animation (Magnetic tendency)
+        const buttons = document.querySelectorAll('button, a');
+        buttons.forEach(btn => {
+            btn.addEventListener('mouseenter', () => gsap.to(cursor, { scale: 3, background: 'rgba(255,255,255,0.1)' }));
+            btn.addEventListener('mouseleave', () => gsap.to(cursor, { scale: 1, background: 'rgba(255,255,255,0.3)' }));
+        });
+    </script>
+    <!-- 📸 PHOTOGRAPHY -->
+<section id="photography" class="py-32 bg-black">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="mb-20 text-center">
+            <p class="text-xs tracking-[0.5em] text-gray-500 mb-4 uppercase">Gallery</p>
+            <h2 class="serif text-5xl italic">Photography</h2>
+            <p class="serif text-xl text-gray-400 mt-6 max-w-2xl mx-auto italic">
+                “I don't just capture moments. I capture the feeling inside them.”
+            </p>
+        </div>
+
+        <!-- Image Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <!-- Large Feature Image -->
+            <div class="md:col-span-8 overflow-hidden group h-[600px]">
+                <img src="photo1.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Cinematic Shot">
+            </div>
+            <!-- Tall Image -->
+            <div class="md:col-span-4 overflow-hidden group h-[600px]">
+                <img src="photo2.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Portrait">
+            </div>
+            <!-- Small Images -->
+            <div class="md:col-span-4 overflow-hidden group h-[400px]">
+                <img src="photo3.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Street">
+            </div>
+            <div class="md:col-span-4 overflow-hidden group h-[400px]">
+                <img src="photo4.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Nature">
+            </div>
+            <div class="md:col-span-4 overflow-hidden group h-[400px]">
+                <img src="photo5.jpg" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Abstract">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- THE FULL STORY MODAL (POPUP) -->
+<div id="storyModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 md:p-8">
+    <!-- Background Blur Overlay -->
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="toggleStoryModal()"></div>
+    
+    <!-- Modal Content -->
+    <div class="relative bg-[#0a0a0a] border border-white/10 w-full max-w-3xl max-h-[85vh] overflow-y-auto rounded-2xl p-8 md:p-12 shadow-2xl">
+        <!-- Close Button -->
+        <button onclick="toggleStoryModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+
+        <article class="space-y-8">
+            <h2 class="serif text-3xl md:text-5xl text-white leading-tight">അവസാന ബെഞ്ചിലെ ജനൽ</h2>
+            
+            <div class="text-gray-300 space-y-6 leading-relaxed text-lg font-light">
+                <p>കോളേജിലെ അവസാന ബെഞ്ചിനരികിലുള്ള ജനൽ ആർക്കും ഇഷ്ടമായിരുന്നില്ല. അവിടെ ഇരിക്കുന്നവർ പുറത്തേക്ക് നോക്കിയിരിക്കും, ക്ലാസിൽ ശ്രദ്ധിക്കില്ല എന്നായിരുന്നു എല്ലാവരുടെയും ധാരണ.</p>
+                <p>പക്ഷേ ഓരോ ദിവസവും ആ ജനലരികിൽ ഒരാൾ മാത്രം കൃത്യമായി എത്തും. അർജുൻ. അർജുന് കാഴ്ചശേഷിയില്ലായിരുന്നു.</p>
+                <p>"കാണാൻ കഴിയാത്ത ഒരാൾ എന്തിനാണ് ജനലരികിൽ ഇരിക്കുന്നത്?" എന്ന് പലരും പരിഹസിച്ചു. അവൻ മറുപടി പറഞ്ഞില്ല. വെറുതെ ചിരിച്ചു.</p>
+                <p>ഒരു ദിവസം മലയാളം അധ്യാപിക ക്ലാസിനോട് ചോദിച്ചു: "ഈ ജനലിലൂടെ നിങ്ങൾ എന്താണ് കാണുന്നത്?"</p>
+                <p>"മരങ്ങൾ.", "കളിസ്ഥലം.", "ആകാശം.", "പക്ഷികൾ." ഓരോരുത്തരും ഓരോ മറുപടി പറഞ്ഞു.</p>
+                <p>അവസാനം അധ്യാപിക അർജുനെ നോക്കി: "നിനക്കോ?"</p>
+                <p>ക്ലാസ് മുഴുവൻ നിശ്ശബ്ദമായി. അർജുൻ പതുക്കെ എഴുന്നേറ്റു.</p>
+                <p>"എനിക്ക് മരങ്ങൾ കാണാൻ കഴിയില്ല. പക്ഷേ അവയുടെ ഇലകൾ കാറ്റിൽ ചിരിക്കുന്ന ശബ്ദം കേൾക്കാം. കളിസ്ഥലം കാണാൻ കഴിയില്ല. പക്ഷേ അവിടെ ആരൊക്കെയോ സ്വപ്നങ്ങൾ പിന്തുടരുന്ന കാലൊച്ച കേൾക്കാം. മഴ വരുമ്പോൾ മണ്ണിന്റെ മണം അറിയാം. പക്ഷികളുടെ പാട്ടിലൂടെ പ്രഭാതം തിരിച്ചറിയാം. എനിക്ക് ലോകം കാണാൻ കണ്ണുകളില്ല... പക്ഷേ ലോകം എന്നെ തേടി എല്ലാ ദിവസവും വരാറുണ്ട്."</p>
+                <p>ഒരു നിമിഷം മുഴുവൻ ക്ലാസും മിണ്ടാതിരുന്നു. ആ ദിവസത്തിനുശേഷം ആരും അർജുനെ സഹതാപത്തോടെ നോക്കിയില്ല. അവർ അവനിൽ നിന്ന് പഠിക്കാൻ തുടങ്ങി.</p>
+                <p>മാസങ്ങൾക്കുശേഷം കോളേജിൽ പുതിയ കെട്ടിടം ഉദ്ഘാടനം ചെയ്തു. അതിൽ റാംപുകളും ബ്രെയിൽ ബോർഡുകളും ശബ്ദസൂചനകളും ഉണ്ടായിരുന്നു.</p>
+                <p>ഉദ്ഘാടന പ്രസംഗത്തിൽ പ്രിൻസിപ്പൽ പറഞ്ഞു: "ഈ മാറ്റങ്ങൾ ഞങ്ങൾ ആരെയെങ്കിലും സഹായിക്കാൻ ചെയ്തതല്ല. ഈ കോളേജ് എല്ലാവരുടേതാണെന്ന് അംഗീകരിക്കാനാണ്."</p>
+                <p>അർജുൻ വീണ്ടും ആ ജനലരികിൽ ഇരുന്നു. ഇപ്പോൾ പുറത്തുനിന്ന് വീശിയെത്തുന്ന കാറ്റ് പഴയതുപോലെ തന്നെയായിരുന്നു. പക്ഷേ കോളേജിന്റെ മനസ്സ് മാറിയിരുന്നു.</p>
+                
+                <div class="pt-8 border-t border-white/10">
+                    <p class="font-bold text-white italic">അന്ന് അവസാന ബെഞ്ചിലെ ജനൽ എല്ലാവർക്കും ഒരു പാഠം പഠിപ്പിച്ചു—</p>
+                    <p class="text-xl md:text-2xl serif italic text-gray-200 mt-4 leading-relaxed">
+                        "ഭിന്നശേഷി ഒരാളുടെ കഴിവുകളെ കുറയ്ക്കുന്നില്ല. സമൂഹം പണിയുന്ന മതിലുകളാണ് അവസരങ്ങളെ കുറയ്ക്കുന്നത്. ആ മതിലുകൾ പൊളിഞ്ഞാൽ എല്ലാവർക്കും ഒരേ ആകാശമാണ്."
+                    </p>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+
+<!-- JAVASCRIPT TO MAKE IT WORK -->
+<script>
+function toggleStoryModal() {
+    const modal = document.getElementById('storyModal');
+    if (modal.classList.contains('hidden')) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden'; // Stop background scrolling
+    } else {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = 'auto'; // Enable scrolling
+    }
+}
+const music = document.getElementById('bg-music');
+const btn = document.getElementById('music-btn');
+const btnText = document.getElementById('btn-text');
+
+music.volume = 0.4;
+
+btn.addEventListener('click', () => {
+    if (music.paused) {
+        music.play();
+        btn.classList.add('playing');
+        btnText.innerText = "PAUSE";
+    } else {
+        music.pause();
+        btn.classList.remove('playing');
+        btnText.innerText = "PLAY MUSIC";
+    }
+});
+</script>
+</body>
+</html>
